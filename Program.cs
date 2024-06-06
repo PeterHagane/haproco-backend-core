@@ -14,6 +14,39 @@ namespace haproco_backend_core
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+
+            builder.Services.AddCors(
+                options =>
+                {
+                    options.AddPolicy("localhost", policyBuilder =>
+                    {
+                        policyBuilder.WithOrigins("http://localhost:5173");
+                        policyBuilder.WithOrigins("https://localhost:5173");
+                        policyBuilder.AllowAnyHeader();
+                        policyBuilder.AllowAnyMethod();
+                        policyBuilder.AllowCredentials();
+                    });
+
+                    options.AddPolicy("react-haproco", policyBuilder =>
+                    {
+                        policyBuilder.WithOrigins("http://haproco.com");
+                        policyBuilder.WithOrigins("https://haproco.com");
+                        policyBuilder.AllowAnyHeader();
+                        policyBuilder.AllowAnyMethod();
+                        policyBuilder.AllowCredentials();
+                    });
+
+                    options.AddPolicy("react-haproco-vercel", policyBuilder =>
+                    {
+                        policyBuilder.WithOrigins("http://haproco-frontend-react.vercel.app");
+                        policyBuilder.WithOrigins("https://haproco-frontend-react.vercel.app");
+                        policyBuilder.AllowAnyHeader();
+                        policyBuilder.AllowAnyMethod();
+                        policyBuilder.AllowCredentials();
+                    });
+                }
+            );
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,6 +57,10 @@ namespace haproco_backend_core
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("localhost");
+            app.UseCors("react-haproco");
+            app.UseCors("react-haproco-vercel");
 
             app.UseAuthorization();
 
@@ -46,6 +83,7 @@ namespace haproco_backend_core
             })
             .WithName("GetWeatherForecast")
             .WithOpenApi();
+
 
             app.Run();
         }
