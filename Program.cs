@@ -1,10 +1,15 @@
 
+using Microsoft.EntityFrameworkCore;
+using haproco_backend_core.Data;
+
 namespace haproco_backend_core
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            var dbconnection = Environment.GetEnvironmentVariable("DB_CONNECTION");
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -13,6 +18,8 @@ namespace haproco_backend_core
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddDbContext<DataContext>(); 
 
 
             builder.Services.AddCors(
@@ -84,6 +91,10 @@ namespace haproco_backend_core
             .WithName("GetWeatherForecast")
             .WithOpenApi();
 
+            app.MapGet("/testtable", async (DataContext dataContext) =>
+            {
+                return await dataContext.TestTable.ToListAsync();
+            });
 
             app.Run();
         }
