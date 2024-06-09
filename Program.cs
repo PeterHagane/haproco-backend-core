@@ -94,7 +94,9 @@ namespace haproco_backend_core
             app.MapGet("/testtable", async (DataContext dataContext) =>
             {
                 return await dataContext.TestTable.ToListAsync();
-            });
+            })
+            .WithName("GetTestTable")
+            .WithOpenApi();
 
             app.Run();
         }
