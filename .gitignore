@@ -5,6 +5,8 @@
 
 #appsettings
 appsettings.json
+/Properties/launchSettings.json
+/Properties/DbConnections.cs
 
 # dotenv files
 .env
@@ -485,3 +487,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+/Properties/launchSettings.json
+/Properties/DbConnection.cs

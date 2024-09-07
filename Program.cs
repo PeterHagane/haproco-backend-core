@@ -19,7 +19,11 @@ namespace haproco_backend_core
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DataContext>(); 
+            builder.Services.AddDbContext<DataContext>(
+                options => options.UseSqlServer(
+
+                )
+            ); 
 
 
             builder.Services.AddCors(
