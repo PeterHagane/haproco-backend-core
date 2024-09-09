@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using haproco_backend_core.Data;
+using DotNetEnv;
 
 namespace haproco_backend_core
 {
@@ -8,6 +9,8 @@ namespace haproco_backend_core
     {
         public static void Main(string[] args)
         {
+            
+
             var dbconnection = Environment.GetEnvironmentVariable("DB_CONNECTION");
 
             var builder = WebApplication.CreateBuilder(args);
@@ -23,16 +26,18 @@ namespace haproco_backend_core
                 options => options.UseSqlServer(
 
                 )
-            ); 
+            );
 
+            DotNetEnv.Env.Load();
+            var dev = System.Environment.GetEnvironmentVariable("DEVCLIENT");
 
             builder.Services.AddCors(
                 options =>
                 {
                     options.AddPolicy("localhost", policyBuilder =>
                     {
-                        policyBuilder.WithOrigins("http://localhost:5173");
-                        policyBuilder.WithOrigins("https://localhost:5173");
+                        policyBuilder.WithOrigins(dev != null ? $"http{dev}" : "");
+                        policyBuilder.WithOrigins(dev != null ? $"https{dev}" : "");
                         policyBuilder.AllowAnyHeader();
                         policyBuilder.AllowAnyMethod();
                         policyBuilder.AllowCredentials();
@@ -57,6 +62,7 @@ namespace haproco_backend_core
                     });
                 }
             );
+
 
             var app = builder.Build();
 

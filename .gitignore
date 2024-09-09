@@ -4,7 +4,6 @@
 ## Get latest from `dotnet new gitignore`
 
 #appsettings
-appsettings.json
 /Properties/launchSettings.json
 /Properties/DbConnections.cs
 
