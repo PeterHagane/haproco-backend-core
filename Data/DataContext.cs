@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using DotNetEnv;
 
 namespace haproco_backend_core.Data
 {
@@ -14,27 +15,30 @@ namespace haproco_backend_core.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
+
+
+            //object? instance;
+            //object? result = null;
+            //Type? dbConnType = Type.GetType("haproco_backend_core.Properties.DbConnection");
+            //MethodInfo? getString = dbConnType?.GetMethod("GetString");
+            //if (dbConnType != null && getString != null)
+            //{
+            //    instance = Activator.CreateInstance(dbConnType);
+            //    result = getString.Invoke(instance, null);
+            //    dbconnection = result!.ToString();
+            //}
+
+            //dbconnection = Environment.GetEnvironmentVariable("DB_CONNECTION");
+
+            //You need an .env file with DB_CONNECTION=yourconnectionstring here
             string? dbconnection;
-
-            object? instance;
-            object? result = null;
-            Type? dbConnType = Type.GetType("haproco_backend_core.Properties.DbConnection");
-            MethodInfo? getString = dbConnType?.GetMethod("GetString");
-
-            dbconnection = Environment.GetEnvironmentVariable("DB_CONNECTION");
-
-            if (dbConnType != null && getString != null)
-            {
-                instance = Activator.CreateInstance(dbConnType);
-                result = getString.Invoke(instance, null);
-                dbconnection = result!.ToString();
-            }
-
+            DotNetEnv.Env.Load();
+            dbconnection = System.Environment.GetEnvironmentVariable("DB_CONNECTION");
 
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(dbconnection);
+            optionsBuilder.UseNpgsql(dbconnection);
         }
 
-        public DbSet<TestTable> TestTable => Set<TestTable>();
+        public DbSet<Entities.TestTable> TestTable => base.Set<Entities.TestTable>();
     }
 }

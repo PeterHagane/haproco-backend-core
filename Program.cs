@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using haproco_backend_core.Data;
 using DotNetEnv;
 
+
 namespace haproco_backend_core
 {
     public class Program
@@ -22,11 +23,15 @@ namespace haproco_backend_core
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            builder.Services.AddDbContext<DataContext>(
-                options => options.UseSqlServer(
+            //builder.Services.AddDbContext<DataContext>(
+            //    options => options.UseSqlServer(
 
-                )
+            //    )
+            //);
+            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DataContext>(
+                options => options.UseNpgsql()
             );
+
 
             DotNetEnv.Env.Load();
             var dev = System.Environment.GetEnvironmentVariable("DEVCLIENT");
@@ -51,7 +56,7 @@ namespace haproco_backend_core
                         policyBuilder.AllowAnyMethod();
                         policyBuilder.AllowCredentials();
                     });
-
+                    
                     options.AddPolicy("react-haproco-vercel", policyBuilder =>
                     {
                         policyBuilder.WithOrigins("http://haproco-frontend-react.vercel.app");
@@ -60,9 +65,26 @@ namespace haproco_backend_core
                         policyBuilder.AllowAnyMethod();
                         policyBuilder.AllowCredentials();
                     });
+
+                    options.AddPolicy("react-haproco", policyBuilder =>
+                    {
+                        policyBuilder.WithOrigins("http://dev.haproco.com");
+                        policyBuilder.WithOrigins("https://dev.haproco.com");
+                        policyBuilder.AllowAnyHeader();
+                        policyBuilder.AllowAnyMethod();
+                        policyBuilder.AllowCredentials();
+                    });
+
+                    options.AddPolicy("react-haproco-vercel", policyBuilder =>
+                    {
+                        policyBuilder.WithOrigins("http://peterhagane.com");
+                        policyBuilder.WithOrigins("https://peterhagane.com");
+                        policyBuilder.AllowAnyHeader();
+                        policyBuilder.AllowAnyMethod();
+                        policyBuilder.AllowCredentials();
+                    });
                 }
             );
-
 
             var app = builder.Build();
 
@@ -73,6 +95,8 @@ namespace haproco_backend_core
                 app.UseSwaggerUI();
             }
 
+
+
             app.UseHttpsRedirection();
 
             app.UseCors("localhost");
@@ -81,32 +105,9 @@ namespace haproco_backend_core
 
             app.UseAuthorization();
 
-            var summaries = new[]
-            {
-                "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-            };
 
-            app.MapGet("/weatherforecast", (HttpContext httpContext) =>
-            {
-                var forecast = Enumerable.Range(1, 5).Select(index =>
-                    new WeatherForecast
-                    {
-                        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                        TemperatureC = Random.Shared.Next(-20, 55),
-                        Summary = summaries[Random.Shared.Next(summaries.Length)]
-                    })
-                    .ToArray();
-                return forecast;
-            })
-            .WithName("GetWeatherForecast")
-            .WithOpenApi();
-
-            app.MapGet("/testtable", async (DataContext dataContext) =>
-            {
-                return await dataContext.TestTable.ToListAsync();
-            })
-            .WithName("GetTestTable")
-            .WithOpenApi();
+            WeatherForecast.Map(app);
+            TestTable.Map(app);
 
             app.Run();
         }

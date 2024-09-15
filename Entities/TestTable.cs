@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace haproco_backend_core
+namespace haproco_backend_core.Entities
 {
     public class TestTable
     {
