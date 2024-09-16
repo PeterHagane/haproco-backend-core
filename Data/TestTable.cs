@@ -8,7 +8,7 @@ namespace haproco_backend_core.Data
         {
             app.MapGet("/testtable", async (DataContext dataContext) =>
             {
-                return await dataContext.TestTable.ToListAsync();
+                return await dataContext.testtable.ToListAsync();
             })
             .WithName("GetTestTable")
             .WithOpenApi();

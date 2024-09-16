@@ -39,6 +39,6 @@ namespace haproco_backend_core.Data
             optionsBuilder.UseNpgsql(dbconnection);
         }
 
-        public DbSet<Entities.TestTable> TestTable => base.Set<Entities.TestTable>();
+        public DbSet<Entities.TestTable> testtable => base.Set<Entities.TestTable>();
     }
 }
